@@ -96,9 +96,82 @@ int main() {
       running = false;
     }
     else {
-      cout << "Not Sure What You're Trying To Do" << endl;
+      cout << "Invalid input" << endl;
     }
   }  
   return 0;
 }
-  
+
+void addStudent(Node* head, Node* newNode) {
+  if (head->getNext() != NULL) { 
+    if (newNode->getStudent()->get_id() >= head->getNext()->getStudent()->get_id()) { 
+      head = head->getNext();
+      addStudent(head, newNode);
+    }
+    else { 
+      Node* temp = head->getNext();
+      head->setNext(newNode);
+      newNode->setNext(temp);
+    }
+  }
+  else { 
+    head->setNext(newNode);
+    newNode->setNext(NULL);
+  }
+}
+
+// prints everything
+void print(Node* head) {
+  Node* current = head;
+  if (current != NULL) {
+    cout << "First Name: " << current->getStudent()->get_first_name() << endl;
+    cout << "Last Name: " << current->getStudent()->get_last_name() << endl;
+    cout << "Student ID: " << current->getStudent()->get_id() << endl;
+    cout << "GPA: " << current->getStudent()->get_gpa() << endl;
+    current = current->getNext();
+    print(current);
+  }
+}
+
+// delete
+void deleteStudent(int id, Node* head) {
+  bool deleted = false;
+  if (id == head->getStudent()->get_id()) { 
+    Node* temp = head;
+    head = head->getNext();
+    delete temp;
+    deleted = true;
+    cout << "Student deleted" << endl;
+  }
+  else if (id == head->getNext()->getStudent()->get_id()) { 
+    Node* temp = head->getNext();
+    head->setNext(head->getNext()->getNext());
+    delete temp;
+    deleted = true;
+    cout << "Student deleted" << endl;
+  }
+  else { 
+    head = head->getNext();
+    deleteStudent(id, head);
+  }
+
+  if (deleted == false) { 
+    cout << "This student is not in the list" << endl;
+  }
+}
+
+// average
+void average(float total, int numOfStudents, Node* head) {
+  if (head->getNext() != NULL) { 
+    head = head->getNext();
+    total = total + head->getStudent()->get_gpa();
+    numOfStudents++;
+    average(total, numOfStudents, head);
+  }
+  else { 
+    float printGPA = total / numOfStudents;
+    cout << "Average GPA: ";
+    printf("%.2f", printGPA);
+    cout << endl;
+  }
+}
